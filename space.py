@@ -1,4 +1,5 @@
 import arcade
+import arcade.key
 
 from models import World, Ship
 
@@ -14,7 +15,8 @@ class ModelSprite(arcade.Sprite):
     def sync_with_model(self):
         if self.model:
             self.set_position(self.model.x, self.model.y)
- 
+            self.angle = self.model.angle            
+            
     def draw(self):
         self.sync_with_model()
         super().draw()
@@ -27,13 +29,18 @@ class SpaceGameWindow(arcade.Window):
 
         self.world = World(width, height)
         self.ship_sprite = ModelSprite('images/ship.png',model=self.world.ship)
+        self.gold_sprite = ModelSprite('images/gold.png',model=self.world.gold)
  
     def on_draw(self):
         arcade.start_render()
+        self.gold_sprite.draw()
         self.ship_sprite.draw()
  
     def animate(self, delta):
         self.world.animate(delta)
+        
+    def on_key_press(self, key, key_modifiers):
+        self.world.on_key_press(key, key_modifiers)
         
         
 if __name__ == '__main__':
