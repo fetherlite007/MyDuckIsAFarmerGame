@@ -31,8 +31,14 @@ class GameWindow(arcade.Window):
         self.me_sprite = ModelSprite('images/Me.png',model=self.world.me)
         self.vega_sprite = ModelSprite('images/Orange.png',model=self.world.vega)
         self.vegb_sprite = ModelSprite('images/Banana.png',model=self.world.vegb)
+        self.shovel_sprite = ModelSprite('images/Shovel.png',model=self.world.shovel)
+        self.trash_sprite = ModelSprite('images/Trash.png',model=self.world.trash)
+
         self.vega_texture = arcade.load_texture('images/Orange.png')
         self.vegb_texture = arcade.load_texture('images/Banana.png')
+        self.soil_texture = arcade.load_texture('images/Soil.jpg')
+        self.shovel_texture = arcade.load_texture('images/Shovel.png')
+
         
     def draw_me_state(self):
         if self.world.me.STATE == 'a':
@@ -41,9 +47,35 @@ class GameWindow(arcade.Window):
         if self.world.me.STATE == 'b':
             arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
                                               self.vegb_texture)
+        if self.world.me.STATE == 's':
+            arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
+                                              self.shovel_texture)
 
+    def draw_soils_state(self):
+        for s in self.world.soils:
+            arcade.draw_texture_rectangle(s.x, s.y, 50, 50,
+                                              self.soil_texture)
+            if s.STATE == 'a':
+                arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
+                                              self.vega_texture)
+                
+            if s.STATE == 'b':
+                arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
+                                              self.vegb_texture)
+                
+            
+            timer = s.timer
+            if s.timer_on == True:
+                minutes2 = int(timer) // 60
+                seconds2 = int(timer) % 60
+                output2 = "{:02d}:{:02d}".format(minutes2, seconds2)
+                arcade.draw_text(output2, s.x-15, s.y+25, arcade.color.WHITE, 10)
+                
     def on_draw(self):
         arcade.start_render()
+        self.draw_soils_state()
+        self.shovel_sprite.draw()
+        self.trash_sprite.draw()
         self.vega_sprite.draw()
         self.vegb_sprite.draw()
         self.me_sprite.draw()
@@ -56,6 +88,11 @@ class GameWindow(arcade.Window):
         moneyShow = "Money: {:02d}" .format(money)
         arcade.draw_text(output, 400, 400, arcade.color.WHITE, 20)
         arcade.draw_text(moneyShow, 100, 400, arcade.color.WHITE, 20)
+
+
+            
+
+                
         
     
 
