@@ -17,21 +17,30 @@ class Model:
 class World:
     BUY_STATE = 0
     HIT_BOX = 50
+    total_time = 0
     def __init__(self, width, height):
         self.width = width
         self.height = height
  
         self.me = Me(self, 125, 125)
         self.vega = VegA(self, 125, 25)
+        self.vegb = VegB(self, 225, 25)
  
-    def animate(self, delta):
-        self.me.animate(delta)
+    def animate(self, delta_time):
+        self.me.animate(delta_time)
+        self.total_time += delta_time
  
-        if self.me.hit(self.vega, 0) and self.me.MONEY >= 50 and self.BUY_STATE == 1:
-            self.me.MONEY -= 50
-            self.me.VEGA_COUNT += 1
-            print (self.me.VEGA_COUNT)
+        if self.me.hit(self.vega, 0) and self.me.MONEY >= 10 and self.BUY_STATE == 1:
+            self.me.STATE = 'none'
+            self.me.MONEY -= 10
             self.BUY_STATE=0
+            self.me.STATE = 'a'
+
+        if self.me.hit(self.vegb, 0) and self.me.MONEY >= 10 and self.BUY_STATE == 1:
+            self.me.STATE = 'none'
+            self.me.MONEY -= 10
+            self.BUY_STATE=0
+            self.me.STATE = 'b'
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.UP:
@@ -57,12 +66,12 @@ class Me(Model):
     d=1
     SPEED = 0
     MONEY = 100
-    VEGA_COUNT = 0
+    STATE = 'none'
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
   
  
-    def animate(self, delta):
+    def animate(self, delta_time):
     
         if self.d == 1:          
             if self.y > self.world.height-25:
@@ -103,4 +112,7 @@ class VegA(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
+class VegB(Model):
     
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
