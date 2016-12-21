@@ -40,6 +40,7 @@ class GameWindow(arcade.Window):
         self.soil_texture = arcade.load_texture('images/Soil.jpg')
         self.shovel_texture = arcade.load_texture('images/Shovel.png')
         self.wateringcan_texture = arcade.load_texture('images/WateringCan.png')
+        self.deadplant_texture = arcade.load_texture('images/DeadPlant.png')
 
         
     def draw_me_state(self):
@@ -60,11 +61,16 @@ class GameWindow(arcade.Window):
         for s in self.world.soils:
             arcade.draw_texture_rectangle(s.x, s.y, 50, 50,
                                               self.soil_texture)
-            if s.STATE == 'a':
+            if s.plant_dead == True:
+                s.watered = False
+                arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
+                                              self.deadplant_texture)
+                
+            elif s.STATE == 'a':
                 arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
                                               self.vega_texture)
                 
-            if s.STATE == 'b':
+            elif s.STATE == 'b':
                 arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
                                               self.vegb_texture)
                 

@@ -47,6 +47,8 @@ class Soil(Model):
         self.y = y
         self.STATE = 'none'
         self.timer_on = False
+        self.plant_dead = False
+        self.watered = False
         self.timer = 20
         
 
@@ -61,7 +63,6 @@ class World:
         self.total_time = 0
         self.soils = []
         
- 
         self.me = Me(self, 125, 125)
         self.vega = VegA(self, 125, 25)
         self.vegb = VegB(self, 225, 25)
@@ -89,13 +90,13 @@ class World:
             
         for s in self.soils:
             if self.me.hit(s, 0) and self.me.STATE != 'none' and self.BUY_STATE == 1:
-                if self.me.STATE == 'a' and s.STATE == 'none':
+                if self.me.STATE == 'a' and s.STATE == 'none' and s.plant_dead == False and s.watered == False:
                     s.STATE = 'a'
                     self.me.STATE = 'none'
                     self.BUY_STATE=0
                     s.timer_on = True
                     
-                if self.me.STATE == 'b' and s.STATE == 'none':
+                if self.me.STATE == 'b' and s.STATE == 'none' and s.plant_dead == False and s.watered == False:
                     s.STATE = 'b'
                     self.me.STATE = 'none'
                     self.BUY_STATE=0
@@ -104,16 +105,25 @@ class World:
                 if self.me.STATE == 's' and s.STATE != 'none':
                     s.STATE = 'none'
                     s.timer_on = False
+                    s.plant_dead = False
+                    s.watered == False
                     s.timer = 20
+                    self.BUY_STATE=0
+
+                if self.me.STATE == 'w' and s.STATE != 'none':
+                    if s.plant_dead != True:
+                        s.timer_on = False
+                        s.watered == True
+                        s.timer = 20
                     self.BUY_STATE=0
                     
             if s.timer > -0.2 and s.timer < 0.2:
                 s.timer_on = False
-                print(s.timer)
                 s.timer = 20
                 s.timer = 20
                 s.timer = 20
-                print(s.timer)
+                s.plant_dead = True
+                s.watered == False
                 
             if s.timer_on == True:
                 s.timer -= delta_time
