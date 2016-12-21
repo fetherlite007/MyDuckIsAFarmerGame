@@ -29,6 +29,11 @@ class Shovel(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
+class WateringCan(Model):
+    
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+        
 class Trash(Model):
     
     def __init__(self, world, x, y):
@@ -52,8 +57,6 @@ class World:
         self.height = height
 
         self.BUY_STATE = 0
-        self.E_STATE = 0
-        self.X_STATE = 0
         self.HIT_BOX = 50
         self.total_time = 0
         self.soils = []
@@ -63,6 +66,7 @@ class World:
         self.vega = VegA(self, 125, 25)
         self.vegb = VegB(self, 225, 25)
         self.shovel = Shovel(self, 225, 125)
+        self.wateringcan = WateringCan(self, 425, 125)
         self.trash = Trash(self, 325, 125)
         
         for i in range(2):
@@ -114,45 +118,47 @@ class World:
             if s.timer_on == True:
                 s.timer -= delta_time
 
-        if self.me.hit(self.shovel, 0) and self.E_STATE == 1 and self.me.STATE == 'none':
+        if self.me.hit(self.shovel, 0) and self.BUY_STATE == 1 and self.me.STATE == 'none':
             self.me.STATE = 's'
-            self.E_STATE=0
+            self.BUY_STATE=0
 
-        if self.me.hit(self.shovel, 0) and self.E_STATE == 1 and self.me.STATE == 's':
+        if self.me.hit(self.shovel, 0) and self.BUY_STATE == 1 and self.me.STATE == 's':
             self.me.STATE = 'none'
-            self.E_STATE=0
+            self.BUY_STATE=0
 
-        if self.me.hit(self.trash, 0) and self.X_STATE == 1 and self.me.STATE != 's':
+        if self.me.hit(self.wateringcan, 0) and self.BUY_STATE == 1 and self.me.STATE == 'none':
+            self.me.STATE = 'w'
+            self.BUY_STATE=0
+
+        if self.me.hit(self.wateringcan, 0) and self.BUY_STATE == 1 and self.me.STATE == 'w':
             self.me.STATE = 'none'
-            self.X_STATE=0
+            self.BUY_STATE=0
+
+        if self.me.hit(self.trash, 0) and self.BUY_STATE == 1 and self.me.STATE != 's' and self.me.STATE != 'w':
+            self.me.STATE = 'none'
+            self.BUY_STATE = 0
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.UP:
             self.me.switch_direction_to_up()
             self.me.SPEED = self.HIT_BOX
+            self.BUY_STATE = 0
         elif key == arcade.key.DOWN:
             self.me.switch_direction_to_down()
             self.me.SPEED = self.HIT_BOX
+            self.BUY_STATE = 0
         elif key == arcade.key.RIGHT:
             self.me.switch_direction_to_right()
             self.me.SPEED = self.HIT_BOX
+            self.BUY_STATE = 0
         elif key == arcade.key.LEFT:
             self.me.switch_direction_to_left()
             self.me.SPEED = self.HIT_BOX
+            self.BUY_STATE = 0
         
     def on_key_release(self, key, key_modifiers):
         if key == arcade.key.SPACE:
-            self.X_STATE = 0
-            self.E_STATE = 0
             self.BUY_STATE = 1
-        if key == arcade.key.C:
-            self.X_STATE = 0
-            self.E_STATE = 1
-            self.BUY_STATE = 0
-        if key == arcade.key.X:
-            self.X_STATE = 1
-            self.E_STATE = 0
-            self.BUY_STATE = 0
             
             
 class Me(Model):

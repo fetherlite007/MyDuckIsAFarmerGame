@@ -15,7 +15,6 @@ class ModelSprite(arcade.Sprite):
     def sync_with_model(self):
         if self.model:
             self.set_position(self.model.x, self.model.y)
-                      
             
     def draw(self):
         self.sync_with_model()
@@ -33,11 +32,14 @@ class GameWindow(arcade.Window):
         self.vegb_sprite = ModelSprite('images/Banana.png',model=self.world.vegb)
         self.shovel_sprite = ModelSprite('images/Shovel.png',model=self.world.shovel)
         self.trash_sprite = ModelSprite('images/Trash.png',model=self.world.trash)
+        self.wateringcan_sprite = ModelSprite('images/WateringCan.png',model=self.world.wateringcan)
+
 
         self.vega_texture = arcade.load_texture('images/Orange.png')
         self.vegb_texture = arcade.load_texture('images/Banana.png')
         self.soil_texture = arcade.load_texture('images/Soil.jpg')
         self.shovel_texture = arcade.load_texture('images/Shovel.png')
+        self.wateringcan_texture = arcade.load_texture('images/WateringCan.png')
 
         
     def draw_me_state(self):
@@ -50,6 +52,9 @@ class GameWindow(arcade.Window):
         if self.world.me.STATE == 's':
             arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
                                               self.shovel_texture)
+        if self.world.me.STATE == 'w':
+            arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
+                                              self.wateringcan_texture)
 
     def draw_soils_state(self):
         for s in self.world.soils:
@@ -75,6 +80,7 @@ class GameWindow(arcade.Window):
         arcade.start_render()
         self.draw_soils_state()
         self.shovel_sprite.draw()
+        self.wateringcan_sprite.draw()
         self.trash_sprite.draw()
         self.vega_sprite.draw()
         self.vegb_sprite.draw()
@@ -89,14 +95,6 @@ class GameWindow(arcade.Window):
         arcade.draw_text(output, 400, 400, arcade.color.WHITE, 20)
         arcade.draw_text(moneyShow, 100, 400, arcade.color.WHITE, 20)
 
-
-            
-
-                
-        
-    
-
-        
     def animate(self, delta):
         self.world.animate(delta)
         
