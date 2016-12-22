@@ -24,6 +24,21 @@ class VegB(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
+class VegC(Model):
+    
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
+class VegD(Model):
+    
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
+class VegE(Model):
+    
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
 class Shovel(Model):
     
     def __init__(self, world, x, y):
@@ -50,8 +65,8 @@ class Soil(Model):
         super().__init__(world, x, y, 0)
         self.x = x
         self.y = y
-        self.t1 = 20
-        self.t2 = 25
+        self.t1 = 10
+        self.t2 = 15
         self.gt = 5
         self.STATE = 'none'
         self.timer_on = False
@@ -72,39 +87,70 @@ class Soil(Model):
 class World:
     
     def __init__(self, width, height):
+        
         self.width = width
         self.height = height
 
+        self.COST_A = 50
+        self.COST_B = 100
+        self.COST_C = 200
+        self.COST_D = 300
+        self.COST_E = 500
+        self.SELL_A = 75
+        self.SELL_B = 150
+        self.SELL_C = 275
+        self.SELL_D = 400
+        self.SELL_E = 625
         self.BUY_STATE = 0
         self.HIT_BOX = 50
         self.total_time = 0
         self.soils = []
         
-        self.me = Me(self, 125, 125)
-        self.vega = VegA(self, 125, 25)
-        self.vegb = VegB(self, 225, 25)
-        self.shovel = Shovel(self, 225, 125)
-        self.wateringcan = WateringCan(self, 425, 125)
-        self.trash = Trash(self, 325, 125)
-        self.shop = Shop(self, 525, 125)
         
-        for i in range(2):
-            self.soils.append(Soil(self, 225+(100*i), 225))
+        self.me = Me(self, 75, 525)
+        self.vega = VegA(self, 75, 575)
+        self.vegb = VegB(self, 175, 575)
+        self.vegc = VegC(self, 275, 575)
+        self.vegd = VegD(self, 375, 575)
+        self.vege = VegE(self, 475, 575)
+        self.shovel = Shovel(self, 875, 475)
+        self.wateringcan = WateringCan(self, 875, 375)
+        self.trash = Trash(self, 875, 275)
+        self.shop = Shop(self, 875, 175)
+        
+        for i in range(5):
+            for j in range(3):
+                self.soils.append(Soil(self, 125+(150*i), 175+(150*j)))
             
         
     def animate(self, delta_time):
         self.me.animate(delta_time)
         self.total_time += delta_time 
  
-        if self.me.hit(self.vega, 0) and self.me.MONEY >= 10 and self.BUY_STATE == 1 and self.me.STATE == 'none':
-            self.me.MONEY -= 10
+        if self.me.hit(self.vega, 0) and self.me.MONEY >= self.COST_A and self.BUY_STATE == 1 and self.me.STATE == 'none':
+            self.me.MONEY -= self.COST_A
             self.BUY_STATE=0
             self.me.STATE = 'a'
 
-        if self.me.hit(self.vegb, 0) and self.me.MONEY >= 10 and self.BUY_STATE == 1 and self.me.STATE == 'none':
-            self.me.MONEY -= 10
+        if self.me.hit(self.vegb, 0) and self.me.MONEY >= self.COST_B and self.BUY_STATE == 1 and self.me.STATE == 'none':
+            self.me.MONEY -= self.COST_B
             self.BUY_STATE=0
             self.me.STATE = 'b'
+
+        if self.me.hit(self.vegc, 0) and self.me.MONEY >= self.COST_C and self.BUY_STATE == 1 and self.me.STATE == 'none':
+            self.me.MONEY -= self.COST_C
+            self.BUY_STATE=0
+            self.me.STATE = 'c'
+
+        if self.me.hit(self.vegd, 0) and self.me.MONEY >= self.COST_D and self.BUY_STATE == 1 and self.me.STATE == 'none':
+            self.me.MONEY -= self.COST_D
+            self.BUY_STATE=0
+            self.me.STATE = 'd'
+
+        if self.me.hit(self.vege, 0) and self.me.MONEY >= self.COST_E and self.BUY_STATE == 1 and self.me.STATE == 'none':
+            self.me.MONEY -= self.COST_E
+            self.BUY_STATE=0
+            self.me.STATE = 'e'
             
         for s in self.soils:
             if self.me.hit(s, 0) and self.BUY_STATE == 1 and self.me.STATE == 'none' and s.collectable == True:
@@ -112,6 +158,12 @@ class World:
                         self.me.STATE = 'a2'
                     elif s.STATE == 'b3':
                         self.me.STATE = 'b2'
+                    elif s.STATE == 'c3':
+                        self.me.STATE = 'c2'
+                    elif s.STATE == 'd3':
+                        self.me.STATE = 'd2'
+                    elif s.STATE == 'e3':
+                        self.me.STATE = 'e2'
                     s.STATE = 'none'
                     s.timer_on = False
                     s.timer2_on = False
@@ -136,6 +188,24 @@ class World:
                     
                 if self.me.STATE == 'b' and s.STATE == 'none' and s.plant_dead == False and s.watered == False:
                     s.STATE = 'b'
+                    self.me.STATE = 'none'
+                    self.BUY_STATE=0
+                    s.timer_on = True
+
+                if self.me.STATE == 'c' and s.STATE == 'none' and s.plant_dead == False and s.watered == False:
+                    s.STATE = 'c'
+                    self.me.STATE = 'none'
+                    self.BUY_STATE=0
+                    s.timer_on = True
+
+                if self.me.STATE == 'd' and s.STATE == 'none' and s.plant_dead == False and s.watered == False:
+                    s.STATE = 'd'
+                    self.me.STATE = 'none'
+                    self.BUY_STATE=0
+                    s.timer_on = True
+
+                if self.me.STATE == 'e' and s.STATE == 'none' and s.plant_dead == False and s.watered == False:
+                    s.STATE = 'e'
                     self.me.STATE = 'none'
                     self.BUY_STATE=0
                     s.timer_on = True
@@ -200,6 +270,12 @@ class World:
                     s.STATE = 'a2'
                 elif s.STATE == 'b':
                     s.STATE = 'b2'
+                elif s.STATE == 'c':
+                    s.STATE = 'c2'
+                elif s.STATE == 'd':
+                    s.STATE = 'd2'
+                elif s.STATE == 'e':
+                    s.STATE = 'e2'
 
             if s.grow_time2 > -0.2 and s.grow_time2 < 0.2:
                 s.grow_time2_on = False
@@ -212,6 +288,12 @@ class World:
                     s.STATE = 'a3'
                 elif s.STATE == 'b2':
                     s.STATE = 'b3'
+                elif s.STATE == 'c2':
+                    s.STATE = 'c3'
+                elif s.STATE == 'd2':
+                    s.STATE = 'd3'
+                elif s.STATE == 'e2':
+                    s.STATE = 'e3'
 
             if s.timer_on == True:
                 s.timer -= delta_time
@@ -223,10 +305,8 @@ class World:
                 s.grow_time -= delta_time
 
             if s.grow_time2_on == True:
-                s.grow_time2 -= delta_time
+                s.grow_time2 -= delta_time               
                 
-                
-
         if self.me.hit(self.shovel, 0) and self.BUY_STATE == 1 and self.me.STATE == 'none':
             self.me.STATE = 's'
             self.BUY_STATE=0
@@ -249,7 +329,15 @@ class World:
 
         if self.me.hit(self.shop, 0) and self.BUY_STATE == 1 and self.me.STATE != 's' and self.me.STATE != 'w':
             if self.me.STATE == 'a2':
-                self.me.MONEY += 20
+                self.me.MONEY += self.SELL_A
+            elif self.me.STATE == 'b2':
+                self.me.MONEY += self.SELL_B
+            elif self.me.STATE == 'c2':
+                self.me.MONEY += self.SELL_C
+            elif self.me.STATE == 'd2':
+                self.me.MONEY += self.SELL_D
+            elif self.me.STATE == 'e2':
+                self.me.MONEY += self.SELL_E
             self.me.STATE = 'none'
             self.BUY_STATE = 0
 
@@ -283,7 +371,7 @@ class Me(Model):
 
         self.d=1
         self.SPEED = 0
-        self.MONEY = 100
+        self.MONEY = 75
         self.STATE = 'none'
   
  
