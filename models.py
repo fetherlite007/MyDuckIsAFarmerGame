@@ -59,15 +59,20 @@ class Shop(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
+class Her(Model):
+    
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
 class Soil(Model):
 
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
         self.x = x
         self.y = y
-        self.t1 = 10
-        self.t2 = 15
-        self.gt = 5
+        self.t1 = 20
+        self.t2 = 25
+        self.gt = 10
         self.STATE = 'none'
         self.timer_on = False
         self.timer2_on = False
@@ -105,28 +110,33 @@ class World:
         self.HIT_BOX = 50
         self.total_time = 0
         self.soils = []
-        
+        self.end_time = 0
+        self.END_STATE = 0
         
         self.me = Me(self, 75, 525)
+        self.her = Her(self, 825, 325)
         self.vega = VegA(self, 75, 575)
         self.vegb = VegB(self, 175, 575)
         self.vegc = VegC(self, 275, 575)
         self.vegd = VegD(self, 375, 575)
         self.vege = VegE(self, 475, 575)
-        self.shovel = Shovel(self, 875, 475)
-        self.wateringcan = WateringCan(self, 875, 375)
-        self.trash = Trash(self, 875, 275)
-        self.shop = Shop(self, 875, 175)
+        self.shovel = Shovel(self, 25, 475)
+        self.wateringcan = WateringCan(self, 25, 375)
+        self.trash = Trash(self, 25, 275)
+        self.shop = Shop(self, 25, 175)
         
         for i in range(5):
             for j in range(3):
-                self.soils.append(Soil(self, 125+(150*i), 175+(150*j)))
-            
+                self.soils.append(Soil(self, 125+(150*i), 175+(150*j)))        
         
     def animate(self, delta_time):
         self.me.animate(delta_time)
-        self.total_time += delta_time 
- 
+        self.total_time += delta_time
+        
+        if self.me.STRAWBERRY_GIVEN == 3:
+            self.end_time = self.total_time
+            self.END_STATE =1
+        
         if self.me.hit(self.vega, 0) and self.me.MONEY >= self.COST_A and self.BUY_STATE == 1 and self.me.STATE == 'none':
             self.me.MONEY -= self.COST_A
             self.BUY_STATE=0
@@ -341,6 +351,11 @@ class World:
             self.me.STATE = 'none'
             self.BUY_STATE = 0
 
+        if self.me.hit(self.her, 0) and self.BUY_STATE == 1 and self.me.STATE == 'e2':
+            self.me.STRAWBERRY_GIVEN += 1
+            self.BUY_STATE=0
+            self.me.STATE = 'none'
+
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.UP:
             self.me.switch_direction_to_up()
@@ -371,8 +386,9 @@ class Me(Model):
 
         self.d=1
         self.SPEED = 0
-        self.MONEY = 75
+        self.MONEY = 300
         self.STATE = 'none'
+        self.STRAWBERRY_GIVEN = 0
   
  
     def animate(self, delta_time):
@@ -380,16 +396,20 @@ class Me(Model):
         if self.d == 1:          
             if self.y > self.world.height-25:
                 self.y = self.world.height-25
+            if self.y > 525 and self.x > 475 and self.x < 600:
+                self.y = 525
             self.y += self.SPEED
             self.SPEED = 0
         elif self.d == 2:
-            if self.y < 25:
-                self.y = 25
+            if self.y < 125:
+                self.y = 125
             self.y -= self.SPEED
             self.SPEED = 0
         elif self.d == 3:
             if self.x > self.world.width-25:
                 self.x = self.world.width-25
+            if self.y == 575 and self.x > 475:
+                self.x = 475
             self.x += self.SPEED
             self.SPEED = 0
         elif self.d == 4:
