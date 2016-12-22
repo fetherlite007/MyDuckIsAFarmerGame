@@ -33,11 +33,11 @@ class GameWindow(arcade.Window):
         self.shovel_sprite = ModelSprite('images/Shovel.png',model=self.world.shovel)
         self.trash_sprite = ModelSprite('images/Trash.png',model=self.world.trash)
         self.wateringcan_sprite = ModelSprite('images/WateringCan.png',model=self.world.wateringcan)
-
+        
 
         self.vega_texture = arcade.load_texture('images/Orange.png')
         self.vegb_texture = arcade.load_texture('images/Banana.png')
-        self.soil_texture = arcade.load_texture('images/Soil.jpg')
+        self.soil_texture = arcade.load_texture('images/Soil.png')
         self.shovel_texture = arcade.load_texture('images/Shovel.png')
         self.wateringcan_texture = arcade.load_texture('images/WateringCan.png')
         self.deadplant_texture = arcade.load_texture('images/DeadPlant.png')
@@ -47,9 +47,16 @@ class GameWindow(arcade.Window):
         if self.world.me.STATE == 'a':
             arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
                                               self.vega_texture)
+        if self.world.me.STATE == 'a2':
+            arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 30, 30,
+                                              self.vega_texture)
         if self.world.me.STATE == 'b':
             arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
                                               self.vegb_texture)
+        if self.world.me.STATE == 'b2':
+            arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 30, 30,
+                                              self.vegb_texture)
+
         if self.world.me.STATE == 's':
             arcade.draw_texture_rectangle(self.world.me.x, self.world.me.y, 10, 10,
                                               self.shovel_texture)
@@ -69,9 +76,21 @@ class GameWindow(arcade.Window):
             elif s.STATE == 'a':
                 arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
                                               self.vega_texture)
+            elif s.STATE == 'a2':
+                arcade.draw_texture_rectangle(s.x, s.y, 20, 20,
+                                              self.vega_texture)
+            elif s.STATE == 'a3':
+                arcade.draw_texture_rectangle(s.x, s.y, 30, 30,
+                                              self.vega_texture)
                 
             elif s.STATE == 'b':
                 arcade.draw_texture_rectangle(s.x, s.y, 10, 10,
+                                              self.vegb_texture) 
+            elif s.STATE == 'b2':
+                arcade.draw_texture_rectangle(s.x, s.y, 20, 20,
+                                              self.vegb_texture)    
+            elif s.STATE == 'b3':
+                arcade.draw_texture_rectangle(s.x, s.y, 30, 30,
                                               self.vegb_texture)
                 
             
@@ -81,6 +100,13 @@ class GameWindow(arcade.Window):
                 seconds2 = int(timer) % 60
                 output2 = "{:02d}:{:02d}".format(minutes2, seconds2)
                 arcade.draw_text(output2, s.x-15, s.y+25, arcade.color.WHITE, 10)
+
+            timer2 = s.timer2
+            if s.timer2_on == True:
+                minutes3 = int(timer2) // 60
+                seconds3 = int(timer2) % 60
+                output3 = "{:02d}:{:02d}".format(minutes3, seconds3)
+                arcade.draw_text(output3, s.x-15, s.y+25, arcade.color.WHITE, 10)
                 
     def on_draw(self):
         arcade.start_render()
