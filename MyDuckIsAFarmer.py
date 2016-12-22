@@ -33,7 +33,7 @@ class GameWindow(arcade.Window):
         self.shovel_sprite = ModelSprite('images/Shovel.png',model=self.world.shovel)
         self.trash_sprite = ModelSprite('images/Trash.png',model=self.world.trash)
         self.wateringcan_sprite = ModelSprite('images/WateringCan.png',model=self.world.wateringcan)
-        
+        self.shop_sprite = ModelSprite('images/Shop.png',model=self.world.shop)
 
         self.vega_texture = arcade.load_texture('images/Orange.png')
         self.vegb_texture = arcade.load_texture('images/Banana.png')
@@ -116,6 +116,7 @@ class GameWindow(arcade.Window):
         self.trash_sprite.draw()
         self.vega_sprite.draw()
         self.vegb_sprite.draw()
+        self.shop_sprite.draw()
         self.me_sprite.draw()
         self.draw_me_state()
         minutes = int(self.world.total_time) // 60

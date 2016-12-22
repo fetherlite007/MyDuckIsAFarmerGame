@@ -39,6 +39,11 @@ class Trash(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
+class Shop(Model):
+    
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
 class Soil(Model):
 
     def __init__(self, world, x, y):
@@ -81,6 +86,7 @@ class World:
         self.shovel = Shovel(self, 225, 125)
         self.wateringcan = WateringCan(self, 425, 125)
         self.trash = Trash(self, 325, 125)
+        self.shop = Shop(self, 525, 125)
         
         for i in range(2):
             self.soils.append(Soil(self, 225+(100*i), 225))
@@ -238,6 +244,12 @@ class World:
             self.BUY_STATE=0
 
         if self.me.hit(self.trash, 0) and self.BUY_STATE == 1 and self.me.STATE != 's' and self.me.STATE != 'w':
+            self.me.STATE = 'none'
+            self.BUY_STATE = 0
+
+        if self.me.hit(self.shop, 0) and self.BUY_STATE == 1 and self.me.STATE != 's' and self.me.STATE != 'w':
+            if self.me.STATE == 'a2':
+                self.me.MONEY += 20
             self.me.STATE = 'none'
             self.BUY_STATE = 0
 
