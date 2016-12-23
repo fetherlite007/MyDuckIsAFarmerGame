@@ -31,7 +31,7 @@ class GameWindow(arcade.Window):
         self.world = World(width, height)
 
         self.me_sprite = ModelSprite('images/Me.png',model=self.world.me)
-        self.her_sprite = ModelSprite('images/Me.png',model=self.world.her)
+        self.her_sprite = ModelSprite('images/Her.png',model=self.world.her)
         self.vega_sprite = ModelSprite('images/Orange.png',model=self.world.vega)
         self.vegb_sprite = ModelSprite('images/Banana.png',model=self.world.vegb)
         self.vegc_sprite = ModelSprite('images/Grape.png',model=self.world.vegc)
@@ -55,6 +55,8 @@ class GameWindow(arcade.Window):
         self.wateringcan_texture = arcade.load_texture('images/WateringCan.png')
         self.deadplant_texture = arcade.load_texture('images/DeadPlant.png')
         self.ground_texture = arcade.load_texture('images/Ground.png')
+        self.ground2_texture = arcade.load_texture('images/Ground2.png')
+        self.ground3_texture = arcade.load_texture('images/Ground3.png')
         
     def draw_me_state(self):
         if self.world.me.STATE == 'a':
@@ -193,11 +195,13 @@ class GameWindow(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(425, 325, 850, 650,
                                               self.grass_texture)
-        arcade.draw_texture_rectangle(450, 575, 900, 50,
-                                              self.ground_texture)
+        arcade.draw_texture_rectangle(275, 575, 550, 50,
+                                              self.ground3_texture)
         arcade.draw_texture_rectangle(25, 325, 50, 450,
+                                              self.ground2_texture)
+        arcade.draw_texture_rectangle(445, 50, 900, 100,
                                               self.ground_texture)
-        arcade.draw_texture_rectangle(450, 50, 900, 100,
+        arcade.draw_texture_rectangle(700, 575, 300, 50,
                                               self.ground_texture)
         self.draw_soils_state()
         self.shovel_sprite.draw()
