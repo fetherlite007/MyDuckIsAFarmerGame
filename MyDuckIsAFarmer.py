@@ -23,7 +23,8 @@ class ModelSprite(arcade.Sprite):
 class GameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
-        
+        self.bgm_sound = arcade.sound.load_sound("sounds/bgm.mp3")
+        arcade.sound.play_sound(self.bgm_sound)
         self.setup(width,height)
         
     def setup(self, width, height):
